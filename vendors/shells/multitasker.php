@@ -93,7 +93,7 @@ class MultitaskerShell extends Shell {
 			$id = $task['id'];
 			$taskName = $task['task'];
 			$methodName = $task['method'];
-			$data = unserialize($task['data']);
+			$data = $task['data'];
 			
 			$thread->setVariable('taskId', $id);
 			$thread->setVariable('task', $taskName);
@@ -159,7 +159,7 @@ class MultitaskerShell extends Shell {
 		$thread->setVariable('taskId', $task['id']);
 		$thread->setVariable('task', $task['task']);
 		$thread->setVariable('method', $task['method']);
-		$thread->setVariable('data', unserialize($task['data']));
+		$thread->setVariable('data', $task['data']);
 		$thread->setVariable('status', PseudoThread::READY);
 	}
 	
