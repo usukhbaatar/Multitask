@@ -6,7 +6,6 @@ class MultitaskerShell extends Shell {
 	
 	var $uses = array('Multitask.MultitaskQueuedTask');
 	var $threads = array();
-	var $_sleep = 2;
 	var $maxThreads = 25;
 	
 	var $taskModelName = 'MultitaskQueuedTask';

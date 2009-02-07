@@ -1,0 +1,21 @@
+= Overview
+
+Multitask is a CakePHP plugin designed as a proof of concept task manager for non-interactive tasks.
+
+It consists of:
+
+	MultitaskerShell - a daemon that manages the tasks/threads
+	MultitaskQueuedTask - a model for creating tasks
+	ThreadedTask - a base class for your tasks
+
+It uses a slightly modified version of PHP_Fork to handle the threading.
+
+= Requirements
+
+PHP needs to be configured with pcntl and shmop extensions, as it uses PHP_Fork to handle threading.
+
+I have only tested it on PHP5. Please let me know if you get it working on PHP4.
+
+= Windows Compatibility
+
+Although the pcntl and shmop extensions don't run on Windows, I have added "linear threading" (ie. no threading) so you can test the functionality of your tasks on Windows.
