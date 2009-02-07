@@ -11,7 +11,7 @@ class MultitaskQueuedTask extends AppModel {
 	
 	function beforeSave() {
 		$data =& $this->data[$this->alias];
-		if (empty($this->id) && array_key_exists('data', $data)) {
+		if (empty($this->id) && array_key_exists($data['data'])) {
 			if (!$this->is_serialized($data['data'])) {
 				$data['data'] = serialize($data['data']);
 			}
@@ -22,10 +22,7 @@ class MultitaskQueuedTask extends AppModel {
 	function getNextTask() {
 		$task = $this->find('first', array('conditions' => array('status' => self::STATUS_QUEUED))); 
 		if ($task) {
-			$task = $task[$this->alias];
-			if ($this->is_serialized($task['data'])) {
-				$task['data'] = unserialize($task['data']);
-			}
+			return $task[$this->alias];
 		}
 		return $task;
 	}
