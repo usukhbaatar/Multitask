@@ -16,7 +16,7 @@ Multitask is a CakePHP plugin designed as a proof of concept task manager for no
 It consists of:
 
 1. MultitaskerShell - a daemon that manages the tasks/threads
-2. MultitaskQueuedTask - a model for handles task quees
+2. MultitaskQueuedTask - a model for adding queued tasks
 3. ThreadedTask - a base class for your tasks
 
 
