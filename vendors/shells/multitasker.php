@@ -4,17 +4,22 @@ App::import('Vendor', 'PHP_Fork', array('plugin' => 'multitask', 'file' => 'php_
 
 class MultitaskerShell extends Shell {
 	
-	var $uses = array('Multitask.MultitaskQueuedTask');
 	var $threads = array();
 	var $maxThreads = 25;
-	
-	var $taskModelName = 'MultitaskQueuedTask';
 	var $TaskModel = null;
 	
 	function main() {
 		
-		// an alias for simplicity, in future we will allow this to be overwritten
-		$this->TaskModel = $this->MultitaskQueuedTask;
+		$taskModel = Configure::read('plugins.multitask.taskModel');
+
+		if (empty($taskModel)) {
+			$taskModel = 'Multitask.MultitaskQueuedTask';
+		}
+		
+		$this->TaskModel = ClassRegistry::init($taskModel);
+		
+		// if we are on linux then enter multithread mode
+		// otherwise we just do a single threaded loop
 		
 		if (DS == '/') {
 			$this->loop();
@@ -366,7 +371,7 @@ class PseudoThread extends PHP_Fork {
 				}
 				
 			} else {
-				// sleep for 1000 nanoseconds while we wait for more intructions
+				// sleep for 10000 nanoseconds while we wait for more intructions
 				usleep(10000);
 			}
 		}
