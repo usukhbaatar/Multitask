@@ -5,18 +5,21 @@ App::import('Vendor', 'PHP_Fork', array('plugin' => 'multitask', 'file' => 'php_
 class MultitaskerShell extends Shell {
 	
 	var $threads = array();
-	var $maxThreads = 25;
+	var $maxThreads = 5;
 	var $TaskModel = null;
 	
 	function main() {
 		
 		$taskModel = Configure::read('plugins.multitask.taskModel');
-
 		if (empty($taskModel)) {
 			$taskModel = 'Multitask.MultitaskQueuedTask';
 		}
-		
 		$this->TaskModel = ClassRegistry::init($taskModel);
+		
+		$maxThreads = Configure::read('plugins.multitask.maxThreads');
+		if (is_int($maxThreads)) {
+			$this->maxThreads = $maxThreads;
+		}
 		
 		// if we are on linux then enter multithread mode
 		// otherwise we just do a single threaded loop
