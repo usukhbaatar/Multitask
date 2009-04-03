@@ -9,6 +9,12 @@ class MultitaskQueuedTask extends AppModel {
 	const STATUS_INPROGRESS = 2;
 	const STATUS_ERROR = -1;
 	
+	var $validate = array(
+		'task' => array(
+			'rule' => 'notEmpty'
+		)
+	);
+		
 	function beforeSave() {
 		$data =& $this->data[$this->alias];
 		if (empty($this->id) && array_key_exists('data', $data)) {
@@ -31,15 +37,18 @@ class MultitaskQueuedTask extends AppModel {
 	}
 	
 	function taskExecuting($id) {
-		$this->updateAll(array('status' => self::STATUS_INPROGRESS), compact('id'));
+		$this->id = $id;
+		$this->saveField('status', self::STATUS_INPROGRESS);
 	}
 	
 	function taskComplete($id) {
-		$this->updateAll(array('status' => self::STATUS_COMPLETE), compact('id'));
+		$this->id = $id;
+		$this->saveField('status', self::STATUS_COMPLETE);
 	}
 	
 	function taskError($id) {
-		$this->updateAll(array('status' => self::STATUS_ERROR), compact('id'));
+		$this->id = $id;
+		$this->saveField('status', self::STATUS_ERROR);
 	}
 	
 	function is_serialized($data) {
