@@ -6,6 +6,7 @@ class MultitaskerShell extends Shell {
 	
 	var $threads = array();
 	var $maxThreads = 5;
+	var $threadIdleTimeout = 5; // minutes
 	var $TaskModel = null;
 	
 	function main() {
@@ -64,6 +65,7 @@ class MultitaskerShell extends Shell {
 		while (true) {
 			
 			$this->cleanupCompletedThreads();
+			$this->killIdleThreads();
 			$this->cleanupDeadThreads();
 			
 			$thread = &$this->getNextIdleThread();
@@ -144,6 +146,17 @@ class MultitaskerShell extends Shell {
 			if (array_search($thread->getPid(), $output) === false) {
 				$thread->stop();
 				unset($this->threads[$i]);
+			}
+		}
+	}
+	
+	function killIdleThreads() {
+		foreach ($this->threads as $i => $thread) {
+			if ($thread->getVariable('status') == PseudoThread::IDLE) {
+				if ($thread->getVariable('statusModifiedAt') < time() - $this->threadIdleTimeout * 60) {
+					$thread->stop();
+					unset($this->threads[$i]);
+				}
 			}
 		}
 	}
@@ -380,8 +393,17 @@ class PseudoThread extends PHP_Fork {
 		}
 	}
 	
+	
+	
 	function error($message, $code = null) {
 		$this->setVariable('status', self::ERROR);
+	}
+	
+	function setVariable($name, $value) {
+		if ($name == 'status' && $value != parent::getVariable('status')) {
+			parent::setVariable('statusModifiedAt', time());
+		}
+		parent::setVariable($name, $value);
 	}
 	
 	function stop() {
